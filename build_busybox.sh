@@ -57,6 +57,7 @@ fi
 ## INSTALL
 make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE install
 cp -a $ROOT_DIR/$TRIPLET/obj/$PACKAGE/_install/* $ROOT_DIR/$TRIPLET/sysroot/
+rm -f $ROOT_DIR/$TRIPLET/sysroot/linuxrc
 
 if [ $? -ne 0 ]; then
 	echo "$PACKAGE installing failed!" >> $LOG
