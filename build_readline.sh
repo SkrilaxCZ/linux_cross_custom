@@ -2,8 +2,8 @@
 
 ## VARIABLES
 
-export ROOT_DIR=/home/skrilax/arm/build
-export SRC_DIR=/home/skrilax/arm/src
+export SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export ROOT_DIR=$SRC_DIR/../build
 
 export PACKAGE=readline-5.1
 export LOGFILE=readline.log

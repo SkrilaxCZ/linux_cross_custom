@@ -2,8 +2,8 @@
 
 ## VARIABLES
 
-ROOT_DIR=/home/skrilax/arm/build
-SRC_DIR=/home/skrilax/arm/src
+SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ROOT_DIR=$SRC_DIR/../build
 
 GDB=gdb-7.6
 GDB_SERVER=gdb-7.6-server

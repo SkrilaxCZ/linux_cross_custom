@@ -1,8 +1,5 @@
 #!/bin/bash
 
-export ROOT_DIR=/home/skrilax/arm/build
-export SRC_DIR=/home/skrilax/arm/src
-
 ## TEST VARIABLES
 
 if [ "$ARCH" == "" ]; then
@@ -22,6 +19,16 @@ fi
 
 if [ "$LOGFILE" == "" ]; then
 	echo "LOGFILE is not defined"
+	exit 1
+fi
+
+if [ "$SRC_DIR" == "" ]; then
+	echo "SRC_DIR is not defined"
+	exit 1
+fi
+
+if [ "$ROOT_DIR" == "" ]; then
+	echo "ROOT_DIR is not defined"
 	exit 1
 fi
 
