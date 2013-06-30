@@ -52,6 +52,7 @@ if [ $? -ne 0 ]; then
 fi
 
 ## MAKE
+echo "make" >> $LOG
 make
 
 if [ $? -ne 0 ]; then
@@ -61,6 +62,7 @@ if [ $? -ne 0 ]; then
 fi
 
 ## INSTALL
+echo "make prefix=$ROOT_DIR/$TRIPLET/sysroot/usr install" >> $LOG
 eval make prefix=$ROOT_DIR/$TRIPLET/sysroot/usr install
 
 if [ $? -ne 0 ]; then

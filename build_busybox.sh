@@ -46,6 +46,7 @@ if [ $? -ne 0 ]; then
 fi
 
 ## MAKE
+eval "make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE"
 make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE
 
 if [ $? -ne 0 ]; then
@@ -55,6 +56,7 @@ if [ $? -ne 0 ]; then
 fi
 
 ## INSTALL
+eval "make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE install"
 make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE install
 cp -a $ROOT_DIR/$TRIPLET/obj/$PACKAGE/_install/* $ROOT_DIR/$TRIPLET/sysroot/
 rm -f $ROOT_DIR/$TRIPLET/sysroot/linuxrc

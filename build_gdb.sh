@@ -31,6 +31,7 @@ if [ $? -ne 0 ]; then
 fi
 
 ## MAKE
+echo "make" >> $LOG
 make
 
 if [ $? -ne 0 ]; then
@@ -40,7 +41,8 @@ if [ $? -ne 0 ]; then
 fi
 
 ## INSTALL
-eval make install
+echo "make install" >> $LOG
+make install
 
 if [ $? -ne 0 ]; then
 	echo "$GDB installing failed!" >> $LOG
@@ -67,6 +69,7 @@ if [ $? -ne 0 ]; then
 fi
 
 ## MAKE
+echo "make" >> $LOG
 make
 
 if [ $? -ne 0 ]; then
@@ -76,6 +79,7 @@ if [ $? -ne 0 ]; then
 fi
 
 ## INSTALL
+echo "make install" >> $LOG
 eval make install
 
 if [ $? -ne 0 ]; then
