@@ -10,6 +10,7 @@ GDB_SERVER=gdb-7.6-server
 LOGFILE=gdb.log
 
 ## Package
+PACKAGE=$GDB
 source $SRC_DIR/package_check.sh
 
 ## BUILD GDB

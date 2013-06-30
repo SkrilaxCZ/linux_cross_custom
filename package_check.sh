@@ -56,11 +56,16 @@ export PATH="$ROOT_DIR/$TRIPLET/tools/bin:$PATH"
 # CREATE LOG
 export LOG=$ROOT_DIR/$TRIPLET/$LOGFILE
 
+rm -rf $LOG
 touch $LOG
 
 echo "ARCH = $ARCH" >> $LOG
 echo "VENDOR = $VENDOR" >> $LOG
 echo "SYSTEM = $SYSTEM" >> $LOG
 echo "TRIPLET = $TRIPLET" >> $LOG
+echo "PACKAGE = $PACKAGE" >> $LOG
+echo "PACKAGE_ARGS = $PACKAGE_ARGS" >> $LOG
+echo "PACKAGE_CONFIG_CACHE = $PACKAGE_CONFIG_CACHE" >> $LOG
+echo "PACKAGE_PREFIX = $PACKAGE_PREFIX" >> $LOG
 echo "PATH = $PATH" >> $LOG
 echo "==============================================================================" >> $LOG
