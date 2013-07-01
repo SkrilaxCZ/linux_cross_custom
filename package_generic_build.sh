@@ -35,8 +35,16 @@ fi
 
 cd $ROOT_DIR/$TRIPLET/obj
 rm -rf $PACKAGE
-mkdir $PACKAGE
-cd $PACKAGE
+
+if [ "$PACKAGE_COPY_SOURCE" == "1" ]; then
+	cp -a $SRC_DIR/$PACKAGE $ROOT_DIR/$TRIPLET/obj
+	cd $PACKAGE
+	CFG_ROOT=$ROOT_DIR/$TRIPLET/obj/$PACKAGE
+else
+	mkdir $PACKAGE
+	cd $PACKAGE
+	CFG_ROOT=$SRC_DIR/$PACKAGE
+fi
 
 if [ "$PACKAGE_CONFIG_CACHE" != "" ]; then
 	if [ -f "$PACKAGE_CONFIG_CACHE" ]; then
@@ -55,9 +63,17 @@ if [ "$PACKAGE_PREFIX" == "" ]; then
 	PACKAGE_PREFIX=/usr
 fi
 
+if [ "$PACKAGE_OMIT_CONFIG_HOST" == "1" ]; then
+	COMPILER_ARGS="CC=$TRIPLET-gcc CXX=$TRIPLET-g++"
+	HOST_ARGS=
+else
+	COMPILER_ARGS=
+	HOST_ARGS="--host=$TRIPLET"
+fi
+
 echo "Configuring $PACKAGE" >> $LOG
-echo "$SRC_DIR/$PACKAGE/configure --prefix=$PACKAGE_PREFIX --host=$TRIPLET $PACKAGE_ARGS" >> $LOG
-eval $SRC_DIR/$PACKAGE/configure --prefix=$PACKAGE_PREFIX --host=$TRIPLET $PACKAGE_ARGS
+echo "$COMPILER_ARGS $CFG_ROOT/configure --prefix=$PACKAGE_PREFIX $HOST_ARGS $PACKAGE_ARGS" >> $LOG
+eval $COMPILER_ARGS $CFG_ROOT/configure --prefix=$PACKAGE_PREFIX $HOST_ARGS $PACKAGE_ARGS
 
 if [ $? -ne 0 ]; then
 	echo "$PACKAGE configuring failed!" >> $LOG
