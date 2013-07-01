@@ -68,9 +68,6 @@ install: all
 	install -m 0644 $(MINLIBNAME) $(LIBDIR)/$(MINLIBNAME)
 	ln -sf $(MINLIBNAME) $(LIBDIR)/$(MAJLIBNAME)
 	ln -sf $(MAJLIBNAME) $(LIBDIR)/$(LIBNAME)
-ifeq ($(FAKEROOT),)
-	-/sbin/ldconfig
-endif
 
 clean:
 	$(LOCALCLEAN)
