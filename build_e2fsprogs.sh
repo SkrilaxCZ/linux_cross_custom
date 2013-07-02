@@ -104,8 +104,8 @@ if [ $? -ne 0 ]; then
 fi
 
 ## INSTALL
-echo "make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX install" >> $LOG
-eval make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX install
+echo "make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install" >> $LOG
+eval make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install
 
 if [ $? -ne 0 ]; then
 	echo "$PACKAGE installing failed!" >> $LOG
@@ -113,11 +113,11 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-echo "make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX install-libs" >> $LOG
-eval make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX install-libs
+echo "make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install-libs" >> $LOG
+eval make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install-libs
 
 if [ $? -ne 0 ]; then
 	echo "$PACKAGE installing failed!" >> $LOG
 	echo "$PACKAGE installing failed!"
 	exit 1
-fi
+fic
