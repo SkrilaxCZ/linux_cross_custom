@@ -18,6 +18,11 @@ $SRC_DIR/package_generic_build.sh
 if [ $? -ne 0 ]; then exit 1; fi
 
 ## Fix install
+mkdir $ROOT_DIR/$TRIPLET/sysroot/usr/include/attr
+for INC_FILE in attributes.h xattr.h error_context.h libattr.h; do
+	cp $SRC_DIR/$PACKAGE/include/$INC_FILE $ROOT_DIR/$TRIPLET/sysroot/usr/include/attr/
+done
+
 cp -a $ROOT_DIR/$TRIPLET/obj/$PACKAGE/libattr/.libs/libattr* $ROOT_DIR/$TRIPLET/sysroot/lib
 rm -f $ROOT_DIR/$TRIPLET/sysroot/lib/libattr.la
 mv $ROOT_DIR/$TRIPLET/sysroot/lib/libattr.lai $ROOT_DIR/$TRIPLET/sysroot/lib/libattr.la
