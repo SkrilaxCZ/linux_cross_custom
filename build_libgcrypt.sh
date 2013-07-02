@@ -11,4 +11,6 @@ export LOGFILE=libgcrypt.log
 
 ## Package
 source $SRC_DIR/package_check.sh
+export GPG_ERROR_CONFIG=$ROOT_DIR/$TRIPLET/sysroot/usr/bin/gpg-error-config
+export GPG_ERROR_LIBS="-lgpg-error"
 $SRC_DIR/package_generic_build.sh
