@@ -6,9 +6,9 @@ export SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export ROOT_DIR=$SRC_DIR/../build
 
 export PACKAGE=systemd-204
-export PACKAGE_ARGS="--disable-nls"
 export LOGFILE=systemd.log
 
 ## Package
 source $SRC_DIR/package_check.sh
+export PACKAGE_ARGS="--with-libgcrypt-prefix=$ROOT_DIR/$TRIPLET/sysroot/usr --disable-nls"
 $SRC_DIR/package_generic_build.sh
