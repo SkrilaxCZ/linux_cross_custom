@@ -10,5 +10,5 @@ export LOGFILE=systemd.log
 
 ## Package
 source $SRC_DIR/package_check.sh
-export PACKAGE_ARGS="--with-libgcrypt-prefix=$ROOT_DIR/$TRIPLET/sysroot/usr --disable-nls"
+export PACKAGE_ARGS="--with-libgcrypt-prefix=$ROOT_DIR/$TRIPLET/sysroot/usr --disable-nls --with-distro=other --libexecdir=/usr/lib --localstatedir=/var --sysconfdir=/etc"
 $SRC_DIR/package_generic_build.sh
