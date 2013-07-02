@@ -76,3 +76,11 @@ if [ $? -ne 0 ]; then
 	echo "$PACKAGE installing failed!"
 	exit 1
 fi
+
+## Check if we have screwed and linstalled to lib64 instead of lib, this is a hack
+if [ -d $ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX/lib64 ]; then
+	mv $ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX/lib64/libcap* $ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX/lib/
+	# try removing the directory
+	rmdir $ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX/lib64
+fi
+
