@@ -92,8 +92,14 @@ if [ $? -ne 0 ]; then
 fi
 
 ## INSTALL
-echo "make prefix=$ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX install" >> $LOG
-eval make prefix=$ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX install
+
+if [ "$PACKAGE_INSTALL_USE_DESTDIR" == "1" ]; then
+	echo "make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install" >> $LOG
+	eval make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install
+else
+	echo "make prefix=$ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX install" >> $LOG
+	eval make prefix=$ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX install
+fi
 
 if [ $? -ne 0 ]; then
 	echo "$PACKAGE installing failed!" >> $LOG
