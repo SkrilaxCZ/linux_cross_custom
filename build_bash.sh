@@ -34,3 +34,4 @@ $SRC_DIR/package_generic_build.sh
 ## Post install
 cp -a $ROOT_DIR/$TRIPLET/sysroot/share/* $ROOT_DIR/$TRIPLET/sysroot/usr/share/
 rm -Rf $ROOT_DIR/$TRIPLET/sysroot/share
+ln -s bash $ROOT_DIR/$TRIPLET/sysroot/bin/sh
