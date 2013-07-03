@@ -6,6 +6,7 @@ export SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export ROOT_DIR=$SRC_DIR/../build
 
 export PACKAGE=readline-5.1
+export PACKAGE_ARGS="--mandir=\\\${prefix}/share/man --infodir=\\\${prefix}/share/info"
 export LOGFILE=readline.log
 
 ## Package

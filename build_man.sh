@@ -6,7 +6,7 @@ export SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export ROOT_DIR=$SRC_DIR/../build
 
 export PACKAGE=man-1.6g
-export PACKAGE_ARGS="-confdir=/etc"
+export PACKAGE_ARGS="-confdir=/etc -mandir=/usr/share/man"
 export PACKAGE_OMIT_CONFIG_HOST="1"
 export PACKAGE_COPY_SOURCE="1"
 export PACKAGE_INSTALL_USE_DESTDIR="1"

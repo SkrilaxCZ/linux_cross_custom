@@ -7,6 +7,7 @@ export ROOT_DIR=$SRC_DIR/../build
 
 export PACKAGE=termcap-1.3.1
 export LOGFILE=termcap.log
+export infodir='infodir = $(prefix)/share/info'
 
 ## Package
 source $SRC_DIR/package_check.sh
