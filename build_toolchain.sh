@@ -88,6 +88,7 @@ mkdir $SYSROOT/usr/include
 LOG=$ROOT_DIR/$TRIPLET/toolchain.log
 
 touch $LOG
+touch $LOG.build
 
 echo "ARCH = $ARCH" >> $LOG
 echo "VENDOR = $VENDOR" >> $LOG
@@ -111,27 +112,27 @@ build_binutils()
 	
 	echo "Configuring $BINUTILS" >> $LOG
 	echo "$SRC_DIR/$BINUTILS/configure --with-gnu-as --with-gnu-ld --disable-nls --target=$TRIPLET --with-sysroot=$SYSROOT --prefix=$PREFIX" >> $LOG
-	eval $SRC_DIR/$BINUTILS/configure --with-gnu-as --with-gnu-ld --disable-nls --target=$TRIPLET --with-sysroot=$SYSROOT --prefix=$PREFIX
+	eval $SRC_DIR/$BINUTILS/configure --with-gnu-as --with-gnu-ld --disable-nls --target=$TRIPLET --with-sysroot=$SYSROOT --prefix=$PREFIX 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$BINUTILS configuring failed!" >> $LOG
 		echo "$BINUTILS configuring failed!"
 		exit 1
 	fi
 	
 	echo "Compiling $BINUTILS" >> $LOG
-	make
+	make 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$BINUTILS compiling failed!" >> $LOG
 		echo "$BINUTILS compiling failed!"
 		exit 1
 	fi
 	
 	echo "Installing $BINUTILS" >> $LOG
-	make install
+	make install 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$BINUTILS installing failed!" >> $LOG
 		echo "$BINUTILS installing failed!"
 		exit 1
@@ -149,27 +150,27 @@ build_gcc_static()
 	
 	echo "Configuring $GCC_STATIC" >> $LOG	
 	echo "$SRC_DIR/$GCC/configure --with-gnu-as --with-gnu-ld --with-sysroot=$SYSROOT --prefix=$PREFIX --target=$TRIPLET --disable-shared --enable-interwork --disable-multilib --enable-languages=c --disable-nls $GCC_LIBC_ARGS $GCC_ARGS" >> $LOG
-	eval $SRC_DIR/$GCC/configure --with-gnu-as --with-gnu-ld --with-sysroot=$SYSROOT --prefix=$PREFIX --target=$TRIPLET --disable-shared --enable-interwork --disable-multilib --enable-languages=c --disable-nls $GCC_LIBC_ARGS $GCC_ARGS
+	eval $SRC_DIR/$GCC/configure --with-gnu-as --with-gnu-ld --with-sysroot=$SYSROOT --prefix=$PREFIX --target=$TRIPLET --disable-shared --enable-interwork --disable-multilib --enable-languages=c --disable-nls $GCC_LIBC_ARGS $GCC_ARGS 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GCC_STATIC configuring failed!" >> $LOG
 		echo "$GCC_STATIC configuring failed!"
 		exit 1
 	fi
 	
 	echo "Compiling $GCC_STATIC - gcc" >> $LOG
-	make all-gcc
+	make all-gcc 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GCC_STATIC - gcc compiling failed!" >> $LOG
 		echo "$GCC_STATIC - gcc compiling failed!"
 		exit 1
 	fi
 	
 	echo "Installing $GCC_STATIC - gcc" >> $LOG
-	make install-gcc
+	make install-gcc 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GCC_STATIC - gcc installing failed!" >> $LOG
 		echo "$GCC_STATIC - gcc installing failed!"
 		exit 1
@@ -185,9 +186,9 @@ export_headers_kernel()
 	
 	echo "Installing headers for $KERNEL" >> $LOG
 	echo "make ARCH=$ARCH INSTALL_HDR_PATH=$SYSROOT/usr headers_install" >> $LOG 
-	make ARCH=$ARCH INSTALL_HDR_PATH=$SYSROOT/usr headers_install
+	make ARCH=$ARCH INSTALL_HDR_PATH=$SYSROOT/usr headers_install 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$KERNEL installing headers failed!" >> $LOG
 		echo "$KERNEL installing headers failed!"
 		exit 1
@@ -195,7 +196,7 @@ export_headers_kernel()
 	
 	KERNEL_VERSION=`make kernelversion`
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$KERNEL failed reading version!" >> $LOG
 		echo "$KERNEL failed reading version!"
 		exit 1
@@ -215,9 +216,9 @@ export_headers_glibc()
 	
 	echo "Configuring $GLIBC" >> $LOG
 	echo "$SRC_DIR/$GLIBC/configure --target=$TRIPLET --prefix=/usr --enable-add-ons=libidn,nptl,ports --enable-obsolete-rpc libc_cv_forced_unwind=yes libc_cv_c_cleanup=yes --disable-profile --host=$TRIPLET --enable-kernel=$KERNEL_VERSION --with-tls $LIBC_ARGS" >> $LOG
-	eval $SRC_DIR/$GLIBC/configure --target=$TRIPLET --prefix=/usr --enable-add-ons=libidn,nptl,ports --enable-obsolete-rpc libc_cv_forced_unwind=yes libc_cv_c_cleanup=yes --disable-profile --host=$TRIPLET --enable-kernel=$KERNEL_VERSION --with-tls $LIBC_ARGS
+	eval $SRC_DIR/$GLIBC/configure --target=$TRIPLET --prefix=/usr --enable-add-ons=libidn,nptl,ports --enable-obsolete-rpc libc_cv_forced_unwind=yes libc_cv_c_cleanup=yes --disable-profile --host=$TRIPLET --enable-kernel=$KERNEL_VERSION --with-tls $LIBC_ARGS 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GLIBC configuring failed!" >> $LOG
 		echo "$GLIBC configuring failed!"
 		exit 1
@@ -225,9 +226,9 @@ export_headers_glibc()
 	
 	echo "Installing headers for $GLIBC" >> $LOG
 	echo "make cross_compiling=yes install_root=$SYSROOT install-headers" >> $LOG
-	make cross_compiling=yes install_root=$SYSROOT install-headers
+	make cross_compiling=yes install_root=$SYSROOT install-headers 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GLIBC installing headers failed!" >> $LOG
 		echo "$GLIBC installing headers failed!"
 		exit 1
@@ -247,18 +248,18 @@ build_libgcc_static()
 	cd $OBJ_DIR/$GCC_STATIC
 	
 	echo "Compiling $GCC_STATIC - libgcc" >> $LOG
-	make all-target-libgcc
+	make all-target-libgcc 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GCC_STATIC - libgcc compiling failed!" >> $LOG
 		echo "$GCC_STATIC - libgcc compiling failed!"
 		exit 1
 	fi
 	
 	echo "Installing $GCC_STATIC - libgcc" >> $LOG
-	make install-target-libgcc
+	make install-target-libgcc 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GCC_STATIC - libgcc installing failed!" >> $LOG
 		echo "$GCC_STATIC - libgcc installing failed!"
 		exit 1
@@ -273,18 +274,18 @@ build_glibc()
 	cd $OBJ_DIR/$GLIBC
 	
 	echo "Compiling $GLIBC" >> $LOG
-	make cross_compiling=yes
+	make cross_compiling=yes 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GLIBC compiling failed!" >> $LOG
 		echo "$GLIBC compiling failed!"
 		exit 1
 	fi
 	
 	echo "Installing $GLIBC" >> $LOG
-	make install_root=$SYSROOT install
+	make install_root=$SYSROOT install 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GLIBC - libgcc installing failed!" >> $LOG
 		echo "$GLIBC - libgcc installing failed!"
 		exit 1
@@ -302,27 +303,27 @@ build_gcc()
 	
 	echo "Configuring $GCC" >> $LOG
 	echo "$SRC_DIR/$GCC/configure --with-gnu-as --with-gnu-ld --with-sysroot=$SYSROOT --prefix=$PREFIX --target=$TRIPLET --enable-interwork --disable-multilib --enable-languages=c,c++ --disable-nls $GCC_ARGS" >> $LOG
-	eval $SRC_DIR/$GCC/configure --with-gnu-as --with-gnu-ld --with-sysroot=$SYSROOT --prefix=$PREFIX --target=$TRIPLET --enable-interwork --disable-multilib --enable-languages=c,c++ --disable-nls $GCC_ARGS
+	eval $SRC_DIR/$GCC/configure --with-gnu-as --with-gnu-ld --with-sysroot=$SYSROOT --prefix=$PREFIX --target=$TRIPLET --enable-interwork --disable-multilib --enable-languages=c,c++ --disable-nls $GCC_ARGS 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GCC configuring failed!" >> $LOG
 		echo "$GCC configuring failed!"
 		exit 1
 	fi
 	
 	echo "Compiling $GCC" >> $LOG
-	make all
+	make all 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GCC compiling failed!" >> $LOG
 		echo "$GCC compiling failed!"
 		exit 1
 	fi
 	
 	echo "Installing $GCC" >> $LOG
-	make install
+	make install 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$GCC installing failed!" >> $LOG
 		echo "$GCC installing failed!"
 		exit 1
@@ -340,27 +341,27 @@ build_newlib()
 
 	echo "Configuring $NEWLIB" >> $LOG
 	echo "$SRC_DIR/$NEWLIB/configure --target=$TRIPLET --prefix=$SYSROOT/usr --disable-newlib-supplied-syscalls --disable-multilib $LIBC_ARGS" >> $LOG
-	eval $SRC_DIR/$NEWLIB/configure --target=$TRIPLET --prefix=$SYSROOT/usr --disable-newlib-supplied-syscalls --disable-multilib $LIBC_ARGS
+	eval $SRC_DIR/$NEWLIB/configure --target=$TRIPLET --prefix=$SYSROOT/usr --disable-newlib-supplied-syscalls --disable-multilib $LIBC_ARGS 2>&1 | tee -a $LOG.build
 
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$NEWLIB configuring failed!" >> $LOG
 		echo "$NEWLIB configuring failed!"
 		exit 1
 	fi
 	
 	echo "Compiling $NEWLIB" >> $LOG
-	make
+	make 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$NEWLIB compiling failed!" >> $LOG
 		echo "$NEWLIB compiling failed!"
 		exit 1
 	fi
 	
 	echo "Installing $NEWLIB" >> $LOG
-	make install
+	make install 2>&1 | tee -a $LOG.build
 	
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$NEWLIB installing failed!" >> $LOG
 		echo "$NEWLIB installing failed!"
 		exit 1

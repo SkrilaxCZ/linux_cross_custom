@@ -23,9 +23,9 @@ cd $GDB
 
 echo "Configuring $GDB" >> $LOG
 echo "$SRC_DIR/$GDB/configure --prefix=$ROOT_DIR/$TRIPLET/host --target=$TRIPLET" >> $LOG
-eval $SRC_DIR/$GDB/configure --prefix=$ROOT_DIR/$TRIPLET/host --target=$TRIPLET
+eval $SRC_DIR/$GDB/configure --prefix=$ROOT_DIR/$TRIPLET/host --target=$TRIPLET 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$GDB configuring failed!" >> $LOG
 	echo "$GDB configuring failed!"
 	exit 1
@@ -33,9 +33,9 @@ fi
 
 ## MAKE
 echo "make" >> $LOG
-make
+make 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$GDB compiling failed!" >> $LOG
 	echo "$GDB compiling failed!"
 	exit 1
@@ -43,9 +43,9 @@ fi
 
 ## INSTALL
 echo "make install" >> $LOG
-make install
+make install 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$GDB installing failed!" >> $LOG
 	echo "$GDB installing failed!"
 	exit 1
@@ -61,9 +61,9 @@ cd $GDB_SERVER
 
 echo "Configuring $GDB_SERVER" >> $LOG
 echo "$SRC_DIR/$GDB/gdb/gdbserver/configure --prefix=$ROOT_DIR/$TRIPLET/sysroot/usr --host=$TRIPLET" >> $LOG
-eval $SRC_DIR/$GDB/gdb/gdbserver/configure --prefix=$ROOT_DIR/$TRIPLET/sysroot/usr --host=$TRIPLET
+eval $SRC_DIR/$GDB/gdb/gdbserver/configure --prefix=$ROOT_DIR/$TRIPLET/sysroot/usr --host=$TRIPLET 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$GDB_SERVER configuring failed!" >> $LOG
 	echo "$GDB_SERVER configuring failed!"
 	exit 1
@@ -71,9 +71,9 @@ fi
 
 ## MAKE
 echo "make" >> $LOG
-make
+make 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$GDB_SERVER compiling failed!" >> $LOG
 	echo "$GDB_SERVER compiling failed!"
 	exit 1
@@ -81,9 +81,9 @@ fi
 
 ## INSTALL
 echo "make install" >> $LOG
-eval make install
+eval make install 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$GDB_SERVER installing failed!" >> $LOG
 	echo "$GDB_SERVER installing failed!"
 	exit 1

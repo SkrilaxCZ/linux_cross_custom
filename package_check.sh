@@ -64,6 +64,14 @@ export LOG=$ROOT_DIR/$TRIPLET/$LOGFILE
 rm -rf $LOG
 touch $LOG
 
+rm -rf $LOG.build
+touch $LOG.build
+
+# OPTIONAL VARIABLES
+if [ "$PACKAGE_PREFIX" == "" ]; then
+	export PACKAGE_PREFIX=/usr
+fi
+
 echo "ARCH = $ARCH" >> $LOG
 echo "VENDOR = $VENDOR" >> $LOG
 echo "SYSTEM = $SYSTEM" >> $LOG
@@ -72,5 +80,8 @@ echo "PACKAGE = $PACKAGE" >> $LOG
 echo "PACKAGE_ARGS = $PACKAGE_ARGS" >> $LOG
 echo "PACKAGE_CONFIG_CACHE = $PACKAGE_CONFIG_CACHE" >> $LOG
 echo "PACKAGE_PREFIX = $PACKAGE_PREFIX" >> $LOG
+echo "PACKAGE_OMIT_CONFIG_HOST = $PACKAGE_OMIT_CONFIG_HOST" >> $LOG
+echo "PACKAGE_INSTALL_USE_DESTDIR = $PACKAGE_INSTALL_USE_DESTDIR" >> $LOG
+echo "PACKAGE_COPY_SOURCE = $PACKAGE_COPY_SOURCE" >> $LOG
 echo "PATH = $PATH" >> $LOG
 echo "==============================================================================" >> $LOG

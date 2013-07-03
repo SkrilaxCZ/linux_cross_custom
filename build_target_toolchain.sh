@@ -20,9 +20,9 @@ cd $BINUTILS-target
 
 echo "Configuring $BINUTILS" >> $LOG
 echo "$SRC_DIR/$BINUTILS/configure --with-gnu-as --with-gnu-ld --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib --libexecdir=/usr/lib --host=$TRIPLET --target=$TRIPLET --disable-nls" >> $LOG
-eval $SRC_DIR/$BINUTILS/configure --with-gnu-as --with-gnu-ld --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib --libexecdir=/usr/lib --host=$TRIPLET --target=$TRIPLET --disable-nls
+eval $SRC_DIR/$BINUTILS/configure --with-gnu-as --with-gnu-ld --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib --libexecdir=/usr/lib --host=$TRIPLET --target=$TRIPLET --disable-nls 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$BINUTILS configuring failed!" >> $LOG
 	echo "$BINUTILS configuring failed!"
 	exit 1
@@ -30,9 +30,9 @@ fi
 
 echo "Compiling $BINUTILS" >> $LOG
 echo "make all" >> $LOG
-make all
+make all 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$BINUTILS compiling failed!" >> $LOG
 	echo "$BINUTILS compiling failed!"
 	exit 1
@@ -40,9 +40,9 @@ fi
 
 echo "Installing $BINUTILS" >> $LOG
 echo "make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install" >> $LOG
-make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install
+make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$BINUTILS installing failed!" >> $LOG
 	echo "$BINUTILS installing failed!"
 	exit 1
@@ -66,9 +66,9 @@ cd $GCC-target
 
 echo "Configuring $GCC" >> $LOG
 echo "$SRC_DIR/$GCC/configure --with-gnu-as --with-gnu-ld --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib --libexecdir=/usr/lib --host=$TRIPLET --target=$TRIPLET --enable-interwork --disable-multilib --enable-languages=c,c++ --disable-nls $GCC_ARGS" >> $LOG
-eval $SRC_DIR/$GCC/configure --with-gnu-as --with-gnu-ld --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib --libexecdir=/usr/lib --host=$TRIPLET --target=$TRIPLET --enable-interwork --disable-multilib --enable-languages=c,c++ --disable-nls $GCC_ARGS
+eval $SRC_DIR/$GCC/configure --with-gnu-as --with-gnu-ld --prefix=/usr --infodir=/usr/share/info --mandir=/usr/share/man --libdir=/usr/lib --libexecdir=/usr/lib --host=$TRIPLET --target=$TRIPLET --enable-interwork --disable-multilib --enable-languages=c,c++ --disable-nls $GCC_ARGS 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$GCC configuring failed!" >> $LOG
 	echo "$GCC configuring failed!"
 	exit 1
@@ -76,9 +76,9 @@ fi
 
 echo "Compiling $GCC" >> $LOG
 echo "make all" >> $LOG
-make all
+make all 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$GCC compiling failed!" >> $LOG
 	echo "$GCC compiling failed!"
 	exit 1
@@ -86,9 +86,9 @@ fi
 
 echo "Installing $GCC" >> $LOG
 echo "make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install" >> $LOG
-make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install
+make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot install 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$GCC installing failed!" >> $LOG
 	echo "$GCC installing failed!"
 	exit 1

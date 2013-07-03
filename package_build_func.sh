@@ -64,10 +64,6 @@ configure_package()
 		fi
 	fi
 
-	if [ "$PACKAGE_PREFIX" == "" ]; then
-		PACKAGE_PREFIX=/usr
-	fi
-
 	if [ "$PACKAGE_OMIT_CONFIG_HOST" == "1" ]; then
 		COMPILER_ARGS="CC=$TRIPLET-gcc CXX=$TRIPLET-g++"
 		HOST_ARGS=
@@ -78,9 +74,9 @@ configure_package()
 
 	echo "Configuring $PACKAGE" >> $LOG
 	echo "$COMPILER_ARGS $CFG_ROOT/configure --prefix=$PACKAGE_PREFIX $HOST_ARGS $PACKAGE_ARGS" >> $LOG
-	eval $COMPILER_ARGS $CFG_ROOT/configure --prefix=$PACKAGE_PREFIX $HOST_ARGS $PACKAGE_ARGS
+	eval $COMPILER_ARGS $CFG_ROOT/configure --prefix=$PACKAGE_PREFIX $HOST_ARGS $PACKAGE_ARGS 2>&1 | tee -a $LOG.build
 
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$PACKAGE configuring failed!" >> $LOG
 		echo "$PACKAGE configuring failed!"
 		exit 1
@@ -91,9 +87,9 @@ configure_package()
 make_package_custom_cmd()
 {
 	echo "make $1" >> $LOG
-	eval make $1
+	eval make $1 2>&1 | tee -a $LOG.build
 
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$PACKAGE compiling failed!" >> $LOG
 		echo "$PACKAGE compiling failed!"
 		exit 1
@@ -116,13 +112,13 @@ install_package_custom_cmd()
 	
 	if [ "$PACKAGE_INSTALL_USE_DESTDIR" == "1" ]; then
 		echo "make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot $1" >> $LOG
-		eval make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot $1
+		eval make DESTDIR=$ROOT_DIR/$TRIPLET/sysroot $1 2>&1 | tee -a $LOG.build
 	else
 		echo "make prefix=$ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX $1" >> $LOG
-		eval make prefix=$ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX $1
+		eval make prefix=$ROOT_DIR/$TRIPLET/sysroot$PACKAGE_PREFIX $1 2>&1 | tee -a $LOG.build
 	fi
 
-	if [ $? -ne 0 ]; then
+	if [ $PIPESTATUS -ne 0 ]; then
 		echo "$PACKAGE installing failed!" >> $LOG
 		echo "$PACKAGE installing failed!"
 		exit 1

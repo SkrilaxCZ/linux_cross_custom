@@ -35,11 +35,14 @@ cd $SRC_DIR/$PACKAGE
 rm -rf $LOG
 touch $LOG
 
+rm -rf $LOG.build
+touch $LOG.build
+
 echo "Configuring $PACKAGE" >> $LOG
 echo "make defconfig" >> $LOG
-make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE defconfig
+make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE defconfig 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$PACKAGE configuring failed!" >> $LOG
 	echo "$PACKAGE configuring failed!"
 	exit 1
@@ -47,9 +50,9 @@ fi
 
 ## MAKE
 eval "make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE"
-make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE
+make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE 2>&1 | tee -a $LOG.build
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$PACKAGE compiling failed!" >> $LOG
 	echo "$PACKAGE compiling failed!"
 	exit 1
@@ -57,11 +60,11 @@ fi
 
 ## INSTALL
 eval "make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE install"
-make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE install
+make CROSS_COMPILE=$TRIPLET- O=$ROOT_DIR/$TRIPLET/obj/$PACKAGE install 2>&1 | tee -a $LOG.build
 cp -a $ROOT_DIR/$TRIPLET/obj/$PACKAGE/_install/* $ROOT_DIR/$TRIPLET/sysroot/
 rm -f $ROOT_DIR/$TRIPLET/sysroot/linuxrc
 
-if [ $? -ne 0 ]; then
+if [ $PIPESTATUS -ne 0 ]; then
 	echo "$PACKAGE installing failed!" >> $LOG
 	echo "$PACKAGE installing failed!"
 	exit 1
